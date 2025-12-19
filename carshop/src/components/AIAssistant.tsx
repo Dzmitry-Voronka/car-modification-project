@@ -38,8 +38,13 @@ export function AIAssistant() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll tylko w kontenerze wiadomości, nie całej strony
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -201,6 +206,7 @@ export function AIAssistant() {
 
             {/* Messages */}
             <div 
+              ref={messagesContainerRef}
               className="p-6 space-y-6 overflow-y-auto"
               style={{ 
                 height: '500px',
@@ -304,7 +310,7 @@ export function AIAssistant() {
                 </div>
               )}
 
-              <div ref={messagesEndRef} />
+              <div ref={messagesEndRef} style={{ height: '1px' }} />
             </div>
 
             {/* Input */}

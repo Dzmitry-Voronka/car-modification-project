@@ -54,6 +54,80 @@ const galleryItems = [
 
 export function GallerySection3D() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [likedItems, setLikedItems] = useState<Set<number>>(new Set());
+  const [itemLikes, setItemLikes] = useState<Record<number, number>>(
+    galleryItems.reduce((acc, item) => {
+      acc[item.id] = item.likes;
+      return acc;
+    }, {} as Record<number, number>)
+  );
+
+  const handleLike = (itemId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLikedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+        setItemLikes(prevLikes => ({
+          ...prevLikes,
+          [itemId]: prevLikes[itemId] - 1
+        }));
+      } else {
+        newSet.add(itemId);
+        setItemLikes(prevLikes => ({
+          ...prevLikes,
+          [itemId]: (prevLikes[itemId] || 0) + 1
+        }));
+      }
+      return newSet;
+    });
+  };
+
+  const handleShare = (item: typeof galleryItems[0], e: React.MouseEvent) => {
+    e.stopPropagation();
+    const shareUrl = window.location.href.split('#')[0] + `#gallery-${item.id}`;
+    const shareText = `Zobacz ten niesamowity projekt: ${item.title} - ${item.description}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: item.title,
+        text: shareText,
+        url: shareUrl,
+      }).catch(() => {
+        // Fallback jeśli użytkownik anuluje
+        copyToClipboard(shareUrl);
+      });
+    } else {
+      // Fallback - kopiuj do schowka
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      // Pokaż powiadomienie
+      const notification = document.createElement('div');
+      notification.textContent = '✓ Link skopiowany do schowka!';
+      notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: linear-gradient(135deg, #00D4FF 0%, #2CE2F2 100%);
+        color: #0A0A0A;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        animation: slideIn 0.3s ease-out;
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    });
+  };
 
   return (
     <section 
@@ -152,13 +226,22 @@ export function GallerySection3D() {
                     }}
                   >
                     <button 
-                      className="p-2 rounded-lg glass transition-all hover:scale-110"
-                      style={{ border: '1px solid rgba(255, 77, 141, 0.3)' }}
+                      onClick={(e) => handleLike(item.id, e)}
+                      className="p-2 rounded-lg glass transition-all hover:scale-110 active:scale-95"
+                      style={{ 
+                        border: '1px solid rgba(255, 77, 141, 0.3)',
+                        backgroundColor: likedItems.has(item.id) ? 'rgba(255, 77, 141, 0.2)' : 'transparent'
+                      }}
                     >
-                      <Heart size={18} style={{ color: '#FF4D8D' }} />
+                      <Heart 
+                        size={18} 
+                        style={{ color: '#FF4D8D' }}
+                        fill={likedItems.has(item.id) ? '#FF4D8D' : 'none'}
+                      />
                     </button>
                     <button 
-                      className="p-2 rounded-lg glass transition-all hover:scale-110"
+                      onClick={(e) => handleShare(item, e)}
+                      className="p-2 rounded-lg glass transition-all hover:scale-110 active:scale-95"
                       style={{ border: '1px solid rgba(0, 212, 255, 0.3)' }}
                     >
                       <Share2 size={18} style={{ color: '#00D4FF' }} />
@@ -208,10 +291,10 @@ export function GallerySection3D() {
                         <Heart 
                           size={16} 
                           style={{ color: '#FF4D8D' }}
-                          fill={hoveredCard === item.id ? '#FF4D8D' : 'none'}
+                          fill={likedItems.has(item.id) ? '#FF4D8D' : 'none'}
                         />
                         <span className="text-sm" style={{ color: '#FF4D8D' }}>
-                          {item.likes}
+                          {itemLikes[item.id] || item.likes}
                         </span>
                       </div>
                     </div>
