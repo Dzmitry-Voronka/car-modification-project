@@ -7,6 +7,8 @@ import { GallerySection3D } from './components/GallerySection3D';
 import { AIAssistant } from './components/AIAssistant';
 import { Footer } from './components/Footer';
 import { CheckoutSection } from './components/CheckoutSection';
+import { FindDealerSection } from './components/FindDealerSection';
+import { CheckAvailabilitySection } from './components/CheckAvailabilitySection';
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -100,6 +102,12 @@ export default function App() {
 
             {/* Gallery with 3D Effects */}
             <GallerySection3D />
+
+            {/* Find Dealer Section */}
+            <FindDealerSection />
+
+            {/* Check Availability Section */}
+            <CheckAvailabilitySection />
 
             {/* AI Assistant */}
             <AIAssistant />

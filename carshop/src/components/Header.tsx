@@ -46,9 +46,10 @@ export function Header({ cartItemsCount, onCartClick }: HeaderProps) {
 
   const menuItems = [
     { label: 'Główna', id: 'hero', key: 'menu-home' },
-    { label: 'Modele', id: 'hero', key: 'menu-models' },
     { label: 'Konfigurator', id: 'configurator', key: 'menu-configurator' },
     { label: 'Galeria', id: 'gallery', key: 'menu-gallery' },
+    { label: 'Znajdź dealera', id: 'find-dealer', key: 'menu-dealer' },
+    { label: 'Dostępność', id: 'check-availability', key: 'menu-availability' },
     { label: 'Kontakt', id: 'contact', key: 'menu-contact' }
   ];
 
