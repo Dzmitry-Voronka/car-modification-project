@@ -8,7 +8,7 @@ coverage/
 
 # Production
 build/
-dist/
+# dist/ - nie ignorujemy dist, bo jest potrzebny dla GitHub Pages
 *.local
 
 # Logs
