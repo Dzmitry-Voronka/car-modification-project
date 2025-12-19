@@ -111,7 +111,7 @@ export function CheckAvailabilitySection() {
 
   React.useEffect(() => {
     filterProducts();
-  }, [selectedCategory]);
+  }, [selectedCategory, searchQuery]);
 
   const getAvailabilityBadge = (product: Product) => {
     switch (product.availability) {
@@ -212,23 +212,27 @@ export function CheckAvailabilitySection() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  filterProducts();
+                  const value = e.target.value;
+                  setSearchQuery(value);
+                  // Filtrowanie zostanie wykonane przez useEffect
                 }}
                 placeholder="Szukaj produktu..."
                 className="w-full pl-12 pr-6 py-4 rounded-xl glass outline-none transition-all"
                 style={{
                   color: '#FFFFFF',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
-                  fontSize: '16px'
+                  fontSize: '16px',
+                  backgroundColor: 'rgba(26, 26, 26, 0.7)'
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = '#00D4FF';
                   e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 212, 255, 0.3)';
+                  e.currentTarget.style.backgroundColor = 'rgba(26, 26, 26, 0.9)';
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                   e.currentTarget.style.boxShadow = 'none';
+                  e.currentTarget.style.backgroundColor = 'rgba(26, 26, 26, 0.7)';
                 }}
               />
             </div>
